@@ -2,6 +2,8 @@
 
 What happened in space on your birthday?
 
+![Birthday Space](screenshots/home.png)
+
 Birthday Space uses NASA data to show what was happening in space on your birthday.
 
 ## Features
@@ -14,6 +16,8 @@ Birthday Space uses NASA data to show what was happening in space on your birthd
 - Solar energetic particle events
 - Loading and card animations
 - Mobile friendly
+
+![Birthday Search Results](screenshots/results.png)
 
 ## APIs
 
