@@ -59,15 +59,42 @@ birthdayInput.max = new Date().toISOString().split("T")[0];
    APOD
 ========================= */
 
-fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`)
-  .then(response => {
+async function loadApod() {
+  const today = new Date();
+
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+
+  const todayString = today.toISOString().split("T")[0];
+  const yesterdayString = yesterday.toISOString().split("T")[0];
+
+  try {
+    let response = await fetch(
+      `https://api.nasa.gov/planetary/apod?api_key=${API_KEY}&date=${todayString}`
+    );
+
+    let usedDate = todayString;
+
     if (!response.ok) {
-      throw new Error("NASA APOD request failed");
+      console.warn(
+        `Today's APOD failed (${response.status}). Trying yesterday...`
+      );
+
+      response = await fetch(
+        `https://api.nasa.gov/planetary/apod?api_key=${API_KEY}&date=${yesterdayString}`
+      );
+
+      usedDate = yesterdayString;
     }
 
-    return response.json();
-  })
-  .then(data => {
+    if (!response.ok) {
+      throw new Error(
+        `NASA APOD request failed (${response.status})`
+      );
+    }
+
+    const data = await response.json();
+
     let media;
 
     if (data.media_type === "image") {
@@ -105,21 +132,44 @@ fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`)
         ${media}
 
         <div class="apod-content">
-          <p class="apod-date">${data.date}</p>
+          <p class="apod-date">
+            ${data.date}
+            ${
+              usedDate !== todayString
+                ? " · LATEST AVAILABLE"
+                : ""
+            }
+          </p>
+
           <h3>${data.title}</h3>
-          <p class="apod-explanation">${data.explanation}</p>
+
+          <p class="apod-explanation">
+            ${data.explanation}
+          </p>
         </div>
       </div>
     `;
-  })
-  .catch(error => {
+
+  } catch (error) {
+    console.error("APOD error:", error);
+
     apodContainer.innerHTML = `
-      <p class="error">
-        Unable to reach NASA APOD.<br>
-        ${error.message}
-      </p>
+      <div class="quiet-card">
+        <div class="quiet-icon">📡</div>
+
+        <h3>APOD TEMPORARILY UNAVAILABLE</h3>
+
+        <p>
+          NASA's Astronomy Picture of the Day
+          could not be loaded.
+          Please try again later.
+        </p>
+      </div>
     `;
-  });
+  }
+}
+
+loadApod();
 
 /* =========================
    BIRTHDAY SEARCH
@@ -140,13 +190,23 @@ exploreButton.addEventListener("click", async () => {
 
   birthdayOutput.innerHTML = `
     <div class="space-loader">
-      <p id="loading-message">Searching NASA...</p>
+      <p id="loading-message">
+        Searching NASA...
+      </p>
 
       <div class="progress-track">
-        <div class="progress-bar" id="progress-bar"></div>
+        <div
+          class="progress-bar"
+          id="progress-bar"
+        ></div>
       </div>
 
-      <p class="progress-number" id="progress-number">0%</p>
+      <p
+        class="progress-number"
+        id="progress-number"
+      >
+        0%
+      </p>
     </div>
   `;
 
@@ -154,11 +214,20 @@ exploreButton.addEventListener("click", async () => {
     behavior: "smooth"
   });
 
-  const progressBar = document.querySelector("#progress-bar");
-  const progressNumber = document.querySelector("#progress-number");
-  const loadingMessage = document.querySelector("#loading-message");
+  const progressBar =
+    document.querySelector("#progress-bar");
 
-  animateProgress(progressBar, progressNumber, 30);
+  const progressNumber =
+    document.querySelector("#progress-number");
+
+  const loadingMessage =
+    document.querySelector("#loading-message");
+
+  animateProgress(
+    progressBar,
+    progressNumber,
+    30
+  );
 
   const endpoints = [
     {
@@ -184,21 +253,46 @@ exploreButton.addEventListener("click", async () => {
   ];
 
   try {
-    loadingMessage.textContent = "Fetching space weather data...";
+    loadingMessage.textContent =
+      "Fetching space weather data...";
 
-    const requests = endpoints.map(async item => {
-      const url =
-        `https://api.nasa.gov/DONKI/${item.endpoint}` +
-        `?startDate=${date}` +
-        `&endDate=${date}` +
-        `&api_key=${API_KEY}`;
+    const requests = endpoints.map(
+      async item => {
+        const url =
+          `https://api.nasa.gov/DONKI/${item.endpoint}` +
+          `?startDate=${date}` +
+          `&endDate=${date}` +
+          `&api_key=${API_KEY}`;
 
-      try {
-        const response = await fetchWithTimeout(url, 10000);
+        try {
+          const response =
+            await fetchWithTimeout(
+              url,
+              10000
+            );
 
-        if (!response.ok) {
+          if (!response.ok) {
+            console.warn(
+              `${item.type} failed with status ${response.status}`
+            );
+
+            return {
+              ...item,
+              data: []
+            };
+          }
+
+          const data = await response.json();
+
+          return {
+            ...item,
+            data
+          };
+
+        } catch (error) {
           console.warn(
-            `${item.type} failed with status ${response.status}`
+            `${item.type} failed:`,
+            error
           );
 
           return {
@@ -206,39 +300,41 @@ exploreButton.addEventListener("click", async () => {
             data: []
           };
         }
-
-        const data = await response.json();
-
-        return {
-          ...item,
-          data
-        };
-
-      } catch (error) {
-        console.warn(`${item.type} failed:`, error);
-
-        return {
-          ...item,
-          data: []
-        };
       }
-    });
+    );
 
-    animateProgress(progressBar, progressNumber, 60);
+    animateProgress(
+      progressBar,
+      progressNumber,
+      60
+    );
 
-    const results = await Promise.all(requests);
+    const results =
+      await Promise.all(requests);
 
-    animateProgress(progressBar, progressNumber, 90);
+    animateProgress(
+      progressBar,
+      progressNumber,
+      90
+    );
 
     await delay(500);
 
-    loadingMessage.textContent = "Complete.";
+    loadingMessage.textContent =
+      "Complete.";
 
-    animateProgress(progressBar, progressNumber, 100);
+    animateProgress(
+      progressBar,
+      progressNumber,
+      100
+    );
 
     await delay(450);
 
-    showBirthdayResults(date, results);
+    showBirthdayResults(
+      date,
+      results
+    );
 
   } catch (error) {
     birthdayOutput.innerHTML = `
@@ -248,23 +344,30 @@ exploreButton.addEventListener("click", async () => {
         <h3>NASA CONNECTION LOST</h3>
 
         <p>
-          We couldn't retrieve the space weather data.
+          We couldn't retrieve
+          the space weather data.
         </p>
 
-        <small>${error.message}</small>
+        <small>
+          ${error.message}
+        </small>
       </div>
     `;
   } finally {
     exploreButton.disabled = false;
-    exploreButton.textContent = "EXPLORE 🚀";
+    exploreButton.textContent =
+      "EXPLORE 🚀";
   }
 });
 
 /* =========================
-   DISPLAY RESULTS
+   SHOW RESULTS
 ========================= */
 
-function showBirthdayResults(date, results) {
+function showBirthdayResults(
+  date,
+  results
+) {
   const allEvents = [];
 
   results.forEach(result => {
@@ -277,19 +380,27 @@ function showBirthdayResults(date, results) {
     });
   });
 
-  const formattedDate = formatBirthday(date);
+  const formattedDate =
+    formatBirthday(date);
 
   if (allEvents.length === 0) {
     birthdayOutput.innerHTML = `
-      <div class="birthday-date">${formattedDate}</div>
+      <div class="birthday-date">
+        ${formattedDate}
+      </div>
 
       <div class="quiet-card">
-        <div class="quiet-icon">✦</div>
+        <div class="quiet-icon">
+          ✦
+        </div>
 
-        <h3>NOTHING MAJOR WAS RECORDED.</h3>
+        <h3>
+          NOTHING MAJOR WAS RECORDED.
+        </h3>
 
         <p>
-          The universe was unusually quiet on this day.
+          The universe was unusually
+          quiet on this day.
         </p>
       </div>
 
@@ -302,15 +413,30 @@ function showBirthdayResults(date, results) {
   }
 
   const eventCards = allEvents
-    .map((item, index) => createEventCard(item, index))
+    .map(
+      (item, index) =>
+        createEventCard(
+          item,
+          index
+        )
+    )
     .join("");
 
   birthdayOutput.innerHTML = `
-    <div class="birthday-date">${formattedDate}</div>
+    <div class="birthday-date">
+      ${formattedDate}
+    </div>
 
     <div class="event-summary">
-      <span id="event-count">0</span>
-      SPACE WEATHER EVENT${allEvents.length === 1 ? "" : "S"} FOUND
+      <span id="event-count">
+        0
+      </span>
+
+      SPACE WEATHER EVENT${
+        allEvents.length === 1
+          ? ""
+          : "S"
+      } FOUND
     </div>
 
     <div class="event-grid">
@@ -322,14 +448,19 @@ function showBirthdayResults(date, results) {
     </p>
   `;
 
-  animateCount(allEvents.length);
+  animateCount(
+    allEvents.length
+  );
 }
 
 /* =========================
    EVENT CARDS
 ========================= */
 
-function createEventCard(item, index) {
+function createEventCard(
+  item,
+  index
+) {
   const event = item.event;
 
   let description = "";
@@ -353,9 +484,11 @@ function createEventCard(item, index) {
           : ""
       }
     `;
-  }
 
-  else if (item.type === "Coronal Mass Ejection") {
+  } else if (
+    item.type ===
+    "Coronal Mass Ejection"
+  ) {
     description =
       "A coronal mass ejection was observed leaving the Sun.";
 
@@ -366,9 +499,11 @@ function createEventCard(item, index) {
           : ""
       }
     `;
-  }
 
-  else if (item.type === "Geomagnetic Storm") {
+  } else if (
+    item.type ===
+    "Geomagnetic Storm"
+  ) {
     description =
       "Geomagnetic activity was detected around Earth.";
 
@@ -379,9 +514,11 @@ function createEventCard(item, index) {
           : ""
       }
     `;
-  }
 
-  else if (item.type === "Solar Energetic Particle") {
+  } else if (
+    item.type ===
+    "Solar Energetic Particle"
+  ) {
     description =
       "High-energy particles from the Sun were detected in space.";
 
@@ -396,16 +533,20 @@ function createEventCard(item, index) {
 
   return `
     <article
-      class="eve0nt-card"
+      class="event-card"
       style="animation-delay: ${index * 120}ms"
     >
-      <div class="event-icon">${item.icon}</div>
+      <div class="event-icon">
+        ${item.icon}
+      </div>
 
       <p class="event-type">
         ${item.type}
       </p>
 
-      <h3>${item.type.toUpperCase()}</h3>
+      <h3>
+        ${item.type.toUpperCase()}
+      </h3>
 
       <p class="event-description">
         ${description}
@@ -419,50 +560,78 @@ function createEventCard(item, index) {
 }
 
 /* =========================
-   HELPERS
+   DATE FORMATTING
 ========================= */
 
 function formatBirthday(date) {
-  return new Date(`${date}T12:00:00`)
-    .toLocaleDateString("en-US", {
+  return new Date(
+    `${date}T12:00:00`
+  ).toLocaleDateString(
+    "en-US",
+    {
       year: "numeric",
       month: "long",
       day: "numeric"
-    });
+    }
+  );
 }
 
 function formatEventTime(time) {
-  return new Date(time)
-    .toLocaleString("en-US", {
+  return new Date(
+    time
+  ).toLocaleString(
+    "en-US",
+    {
       month: "short",
       day: "numeric",
       hour: "numeric",
       minute: "2-digit"
-    });
+    }
+  );
 }
+
+/* =========================
+   HELPERS
+========================= */
 
 function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(
+    resolve =>
+      setTimeout(resolve, ms)
+  );
 }
 
-function animateProgress(bar, number, target) {
-  let current = parseInt(number.textContent) || 0;
+function animateProgress(
+  bar,
+  number,
+  target
+) {
+  let current =
+    parseInt(number.textContent) || 0;
 
-  const interval = setInterval(() => {
-    if (current >= target) {
-      clearInterval(interval);
-      return;
-    }
+  const interval =
+    setInterval(() => {
+      if (current >= target) {
+        clearInterval(interval);
+        return;
+      }
 
-    current++;
+      current++;
 
-    number.textContent = `${current}%`;
-    bar.style.width = `${current}%`;
-  }, 12);
+      number.textContent =
+        `${current}%`;
+
+      bar.style.width =
+        `${current}%`;
+
+    }, 12);
 }
 
 function animateCount(target) {
-  const element = document.querySelector("#event-count");
+  const element =
+    document.querySelector(
+      "#event-count"
+    );
 
   if (!element) return;
 
@@ -473,27 +642,39 @@ function animateCount(target) {
 
   let current = 0;
 
-  const interval = setInterval(() => {
-    current++;
-    element.textContent = current;
+  const interval =
+    setInterval(() => {
+      current++;
 
-    if (current >= target) {
-      clearInterval(interval);
-    }
-  }, 90);
+      element.textContent =
+        current;
+
+      if (current >= target) {
+        clearInterval(interval);
+      }
+    }, 90);
 }
 
-async function fetchWithTimeout(url, timeout = 10000) {
-  const controller = new AbortController();
+async function fetchWithTimeout(
+  url,
+  timeout = 10000
+) {
+  const controller =
+    new AbortController();
 
-  const timer = setTimeout(() => {
-    controller.abort();
-  }, timeout);
+  const timer =
+    setTimeout(
+      () => controller.abort(),
+      timeout
+    );
 
   try {
-    return await fetch(url, {
-      signal: controller.signal
-    });
+    return await fetch(
+      url,
+      {
+        signal: controller.signal
+      }
+    );
   } finally {
     clearTimeout(timer);
   }
