@@ -9,68 +9,80 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 50% 10%, #18244d 0%, #080d21 35%, #03050d 75%);
+
+  background: #04060d;
+
   color: #ffffff;
   font-family: Arial, sans-serif;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,.8) 1px, transparent 1px),
-    radial-gradient(circle, rgba(255,255,255,.35) 1px, transparent 1px);
-  background-size: 70px 70px, 110px 110px;
-  background-position: 0 0, 35px 25px;
-  opacity: .25;
-  z-index: -1;
 }
 
 main {
   width: 100%;
 }
 
-/* HERO */
+/* =========================
+   HERO
+========================= */
 
 .hero {
   min-height: 100vh;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
+
   padding: 60px 20px;
+
+  text-align: center;
+
+  background: linear-gradient(
+    to bottom,
+    #17213f 0%,
+    #131d39 25%,
+    #0e162d 50%,
+    #090f20 75%,
+    #04060d 100%
+  );
 }
 
 .hero-badge {
+  margin-bottom: 22px;
+
   font-family: "Orbitron", sans-serif;
-  font-size: .7rem;
-  letter-spacing: 4px;
-  color: #829cff;
-  margin-bottom: 24px;
+  font-size: .68rem;
+  letter-spacing: 3px;
+
+  color: #8395d8;
 }
 
 .hero-title {
   margin: 0;
+
   font-family: "Orbitron", sans-serif;
   font-size: clamp(4rem, 11vw, 8rem);
-  line-height: .85;
+  line-height: .86;
   letter-spacing: -4px;
+
+  text-shadow: none;
 }
 
 .hero-title span {
-  color: #91a7ff;
+  color: #8798dc;
 }
 
 .hero-text {
-  margin: 32px 0 42px;
-  color: #b8c1dc;
-  font-size: 1.05rem;
+  margin: 30px 0 40px;
+
+  color: #b4b9ca;
+
+  font-size: 1.02rem;
   line-height: 1.7;
 }
+
+/* =========================
+   SEARCH
+========================= */
 
 .birthday-search {
   width: min(560px, 100%);
@@ -78,131 +90,521 @@ main {
 
 .birthday-search label {
   display: block;
-  margin-bottom: 12px;
+
+  margin-bottom: 10px;
+
   font-family: "Orbitron", sans-serif;
-  font-size: .7rem;
-  letter-spacing: 2px;
-  color: #d7ddff;
+  font-size: .68rem;
+  letter-spacing: 1.6px;
+
+  color: #c8cde0;
 }
 
 .search-row {
   display: flex;
-  gap: 10px;
+  gap: 9px;
 }
 
 #birthday {
   flex: 1;
   min-width: 0;
-  padding: 16px 18px;
-  border: 1px solid #34416e;
-  border-radius: 10px;
-  background: rgba(7, 12, 31, .8);
+
+  padding: 15px 17px;
+
+  border: 1px solid #343e64;
+  border-radius: 7px;
+
+  background: rgba(8, 12, 27, .86);
   color: white;
+
   font-size: 1rem;
+
   color-scheme: dark;
+
+  transition:
+    border-color .2s ease,
+    background .2s ease;
+}
+
+#birthday:focus {
+  outline: none;
+
+  border-color: #7182c2;
+  background: rgba(10, 15, 33, .95);
 }
 
 #explore-btn {
-  padding: 0 24px;
+  padding: 0 23px;
+
   border: 0;
-  border-radius: 10px;
-  background: #8ea4ff;
-  color: #050816;
+  border-radius: 7px;
+
+  background: #8294d5;
+  color: #080b15;
+
   font-family: "Orbitron", sans-serif;
-  font-weight: 900;
+  font-weight: 800;
+
   cursor: pointer;
-  transition: transform .2s ease, box-shadow .2s ease;
+
+  transition:
+    background .18s ease,
+    transform .18s ease;
 }
 
 #explore-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(142, 164, 255, .35);
+  background: #91a1dd;
+  transform: translateY(-1px);
+}
+
+#explore-btn:active {
+  transform: translateY(0);
+}
+
+#explore-btn:disabled {
+  cursor: wait;
+  opacity: .6;
+  transform: none;
 }
 
 .scroll-hint {
-  margin-top: 70px;
-  color: #67759f;
+  margin-top: 67px;
+
+  color: #626d90;
+
   font-family: "Orbitron", sans-serif;
-  font-size: .65rem;
-  letter-spacing: 2px;
+  font-size: .62rem;
+  letter-spacing: 1.5px;
 }
 
-/* APOD */
+/* =========================
+   APOD
+========================= */
 
 .apod-section {
-  width: min(1000px, calc(100% - 40px));
+  width: min(1100px, calc(100% - 40px));
+
   margin: 0 auto;
   padding: 100px 0 140px;
 }
 
 .section-label {
-  margin: 0 0 10px;
+  margin: 0 0 9px;
+
   text-align: center;
-  color: #829cff;
+
+  color: #7d8fd3;
+
   font-family: "Orbitron", sans-serif;
-  font-size: .7rem;
-  letter-spacing: 4px;
+  font-size: .68rem;
+  letter-spacing: 2.5px;
 }
 
-.apod-section > h2 {
-  margin: 0 0 45px;
+.apod-section > h2,
+.birthday-results > h2 {
+  margin: 0 0 42px;
+
   text-align: center;
+
   font-family: "Orbitron", sans-serif;
   font-size: clamp(2rem, 6vw, 4rem);
 }
 
+/* =========================
+   APOD CARD
+========================= */
+
 .apod-card {
+  display: grid;
+  grid-template-columns: 1.35fr .65fr;
+  align-items: stretch;
+
   overflow: hidden;
-  border: 1px solid #28345e;
-  border-radius: 22px;
-  background: rgba(8, 13, 32, .75);
-  box-shadow: 0 30px 80px rgba(0,0,0,.35);
+
+  border: 1px solid #293355;
+  border-radius: 16px;
+
+  background: rgba(9, 13, 29, .82);
+
+  box-shadow: 0 18px 45px rgba(0, 0, 0, .25);
+
+  transition:
+    border-color .25s ease,
+    transform .25s ease;
 }
+
+.apod-card:hover {
+  border-color: #3b4770;
+  transform: translateY(-2px);
+}
+
+/* APOD IMAGE */
 
 .apod-media {
   display: block;
+
   width: 100%;
+  height: 100%;
+  min-height: 500px;
   max-height: 650px;
+
   object-fit: cover;
+
+  border-right: 1px solid #293355;
 }
 
 .apod-video {
-  height: 550px;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+
   border: 0;
+  border-right: 1px solid #293355;
 }
 
+/* APOD TEXT */
+
 .apod-content {
-  padding: 32px;
+  display: flex;
+  flex-direction: column;
+
+  padding: 38px 32px;
 }
 
 .apod-date {
-  margin: 0 0 8px;
-  color: #829cff;
+  margin: 0 0 14px;
+
+  color: #7f90d0;
+
   font-family: "Orbitron", sans-serif;
-  font-size: .75rem;
+  font-size: .68rem;
+  letter-spacing: 1px;
 }
 
 .apod-content h3 {
-  margin: 0 0 20px;
+  margin: 0 0 24px;
+
   font-family: "Orbitron", sans-serif;
-  font-size: 1.8rem;
+  font-size: 1.55rem;
+  line-height: 1.3;
+}
+
+.apod-content h3::after {
+  content: "";
+
+  display: block;
+
+  width: 45px;
+  height: 1px;
+
+  margin-top: 22px;
+
+  background: #46547e;
 }
 
 .apod-explanation {
   margin: 0;
-  color: #b9c1d8;
+
+  color: #adb5ca;
+
+  font-size: .94rem;
   line-height: 1.8;
+}
+
+/* =========================
+   BIRTHDAY RESULTS
+========================= */
+
+.birthday-results {
+  display: none;
+
+  width: min(1000px, calc(100% - 40px));
+
+  margin: 0 auto;
+  padding: 100px 0 150px;
+}
+
+.birthday-results.visible {
+  display: block;
+}
+
+.birthday-date {
+  margin-bottom: 18px;
+
+  text-align: center;
+
+  font-family: "Orbitron", sans-serif;
+  font-size: .9rem;
+  letter-spacing: 1.4px;
+
+  color: #95a2d8;
+}
+
+.event-summary {
+  margin-bottom: 32px;
+
+  text-align: center;
+
+  font-family: "Orbitron", sans-serif;
+  font-size: .68rem;
+  letter-spacing: 1.5px;
+
+  color: #737e9f;
+}
+
+.event-summary span {
+  color: #f4f6ff;
+}
+
+/* =========================
+   EVENT CARDS
+========================= */
+
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.event-card {
+  padding: 27px;
+
+  border: 1px solid #2f395d;
+  border-radius: 13px;
+
+  background: rgba(11, 16, 36, .9);
+
+  opacity: 0;
+  transform: translateY(16px);
+
+  animation: eventAppear .45s ease forwards;
+
+  transition:
+    transform .2s ease,
+    border-color .2s ease,
+    background .2s ease;
+}
+
+.event-card:nth-child(even) {
+  background: rgba(13, 18, 41, .9);
+}
+
+.event-card:hover {
+  transform: translateY(-3px);
+
+  border-color: #526294;
+
+  background: rgba(15, 21, 45, .95);
+}
+
+.event-icon {
+  display: inline-block;
+
+  margin-bottom: 18px;
+
+  font-size: 1.85rem;
+}
+
+.event-type {
+  margin: 0 0 7px;
+
+  color: #7f91d2;
+
+  font-family: "Orbitron", sans-serif;
+  font-size: .62rem;
+  letter-spacing: 1.3px;
+
+  text-transform: uppercase;
+}
+
+.event-card h3 {
+  margin: 0 0 15px;
+
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.08rem;
+}
+
+.event-description {
+  margin: 0 0 20px;
+
+  color: #b4bbce;
+
+  line-height: 1.65;
+}
+
+.event-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  color: #727d9d;
+
+  font-family: "Orbitron", sans-serif;
+  font-size: .62rem;
+}
+
+/* =========================
+   LOADER
+========================= */
+
+.space-loader {
+  max-width: 600px;
+
+  margin: 75px auto;
+
+  text-align: center;
+}
+
+.space-loader > p:first-child {
+  font-family: "Orbitron", sans-serif;
+  font-size: .8rem;
+  letter-spacing: 1.5px;
+
+  color: #c9cee0;
+}
+
+.progress-track {
+  height: 8px;
+
+  margin-top: 22px;
+
+  overflow: hidden;
+
+  border: 1px solid #354064;
+  border-radius: 20px;
+
+  background: #0a0e20;
+}
+
+.progress-bar {
+  width: 0;
+  height: 100%;
+
+  border-radius: 20px;
+
+  background: #8395d5;
+
+  transition: width .2s ease;
+}
+
+.progress-number {
+  margin-top: 10px;
+
+  text-align: right;
+
+  font-family: "Orbitron", sans-serif;
+  font-size: .68rem;
+
+  color: #727d9d;
+}
+
+/* =========================
+   QUIET RESULT
+========================= */
+
+.quiet-card {
+  max-width: 650px;
+
+  margin: 48px auto;
+  padding: 52px 30px;
+
+  text-align: center;
+
+  border: 1px solid #2d3657;
+  border-radius: 15px;
+
+  background: rgba(9, 13, 29, .78);
+}
+
+.quiet-icon {
+  margin-bottom: 22px;
+
+  font-size: 2.7rem;
+}
+
+.quiet-card h3 {
+  margin-bottom: 13px;
+
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.2rem;
+}
+
+.quiet-card p {
+  margin: 0;
+
+  color: #9fa7c0;
+}
+
+.universe-ending {
+  margin-top: 75px;
+
+  text-align: center;
+
+  font-family: "Orbitron", sans-serif;
+  font-size: .78rem;
+  letter-spacing: 1.3px;
+
+  color: #687391;
 }
 
 .loading,
 .error {
   text-align: center;
-  color: #aeb8d7;
+
+  color: #aeb5ca;
 }
 
-/* MOBILE */
+/* =========================
+   ANIMATION
+========================= */
 
-@media (max-width: 600px) {
+@keyframes eventAppear {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+  .apod-card {
+    grid-template-columns: 1.1fr .9fr;
+  }
+
+  .apod-content {
+    padding: 30px 25px;
+  }
+
+  .apod-content h3 {
+    font-size: 1.35rem;
+  }
+
+  .apod-explanation {
+    font-size: .9rem;
+    line-height: 1.7;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+  .hero {
+    padding: 50px 18px;
+
+    background: linear-gradient(
+      to bottom,
+      #17213f 0%,
+      #111a34 35%,
+      #0b1125 70%,
+      #04060d 100%
+    );
+  }
+
   .hero-title {
     letter-spacing: -2px;
   }
@@ -212,411 +614,50 @@ main {
   }
 
   #explore-btn {
-    padding: 16px;
+    padding: 15px;
   }
 
-  .apod-content {
-    padding: 22px;
+  .apod-card {
+    grid-template-columns: 1fr;
+  }
+
+  .apod-media {
+    height: auto;
+    min-height: 0;
+    max-height: 450px;
+
+    border-right: 0;
+    border-bottom: 1px solid #293355;
   }
 
   .apod-video {
     height: 300px;
+    min-height: 0;
+
+    border-right: 0;
+    border-bottom: 1px solid #293355;
   }
-}
 
-/* =========================
-   BIRTHDAY RESULTS
-========================= */
-
-.birthday-results {
-  display: none;
-  width: min(1000px, calc(100% - 40px));
-  margin: 0 auto;
-  padding: 100px 0 150px;
-}
-
-.birthday-results.visible {
-  display: block;
-}
-
-.birthday-results > h2 {
-  margin: 0 0 45px;
-  text-align: center;
-  font-family: "Orbitron", sans-serif;
-  font-size: clamp(2rem, 6vw, 4rem);
-}
-
-
-/* LOADER */
-
-.space-loader {
-  max-width: 600px;
-  margin: 80px auto;
-  text-align: center;
-}
-
-.space-loader > p:first-child {
-  font-family: "Orbitron", sans-serif;
-  letter-spacing: 2px;
-  color: #d7ddff;
-}
-
-.progress-track {
-  height: 10px;
-  margin-top: 25px;
-  overflow: hidden;
-  border: 1px solid #394778;
-  border-radius: 100px;
-  background: #090e25;
-}
-
-.progress-bar {
-  width: 0;
-  height: 100%;
-  border-radius: 100px;
-  background: #8ea4ff;
-  box-shadow: 0 0 25px rgba(142, 164, 255, .65);
-  transition: width .2s ease;
-}
-
-.progress-number {
-  margin-top: 12px;
-  text-align: right;
-  font-family: "Orbitron", sans-serif;
-  font-size: .75rem;
-  color: #7e8bb4;
-}
-
-
-/* DATE */
-
-.birthday-date {
-  margin-bottom: 20px;
-  text-align: center;
-  font-family: "Orbitron", sans-serif;
-  color: #9aabef;
-  letter-spacing: 2px;
-}
-
-
-/* EVENT COUNT */
-
-.event-summary {
-  margin-bottom: 35px;
-  text-align: center;
-  font-family: "Orbitron", sans-serif;
-  font-size: .7rem;
-  letter-spacing: 2px;
-  color: #7784ad;
-}
-
-.event-summary span {
-  color: white;
-}
-
-
-/* EVENTS */
-
-.event-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
-}
-
-.event-card {
-  padding: 30px;
-  border: 1px solid #2d3965;
-  border-radius: 18px;
-  background:
-    linear-gradient(
-      145deg,
-      rgba(20, 29, 66, .82),
-      rgba(7, 11, 28, .9)
-    );
-
-  opacity: 0;
-  transform: translateY(25px);
-
-  animation: eventAppear .55s ease forwards;
-}
-
-.event-card:hover {
-  border-color: #6074c4;
-  transform: translateY(-4px);
-}
-
-.event-icon {
-  margin-bottom: 22px;
-  font-size: 2rem;
-}
-
-.event-type {
-  margin: 0 0 8px;
-  color: #8196eb;
-  font-family: "Orbitron", sans-serif;
-  font-size: .65rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.event-card h3 {
-  margin: 0 0 18px;
-  font-family: "Orbitron", sans-serif;
-  font-size: 1.15rem;
-}
-
-.event-description {
-  margin: 0 0 22px;
-  color: #b8c1d9;
-  line-height: 1.7;
-}
-
-.event-details {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-
-  font-family: "Orbitron", sans-serif;
-  font-size: .65rem;
-  color: #68759e;
-}
-
-
-/* QUIET RESULT */
-
-.quiet-card {
-  max-width: 650px;
-  margin: 50px auto;
-  padding: 60px 30px;
-
-  text-align: center;
-
-  border: 1px solid #29345d;
-  border-radius: 22px;
-
-  background: rgba(8, 13, 32, .65);
-}
-
-.quiet-icon {
-  margin-bottom: 25px;
-  font-size: 3rem;
-}
-
-.quiet-card h3 {
-  font-family: "Orbitron", sans-serif;
-  font-size: 1.3rem;
-}
-
-.quiet-card p {
-  text-align: center;
-  color: #9ba6c7;
-}
-
-
-/* END */
-
-.universe-ending {
-  margin-top: 80px;
-  text-align: center;
-  font-family: "Orbitron", sans-serif;
-  font-size: .9rem;
-  letter-spacing: 2px;
-  color: #717ea8;
-}
-
-
-/* ANIMATION */
-
-@keyframes eventAppear {
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .apod-content {
+    padding: 25px 22px 28px;
   }
-}
 
+  .apod-content h3 {
+    font-size: 1.3rem;
+  }
 
-/* MOBILE */
-
-@media (max-width: 700px) {
   .event-grid {
     grid-template-columns: 1fr;
   }
 
   .event-card {
-    padding: 24px;
+    padding: 23px;
   }
 }
 
 /* =========================
-   FINAL POLISH
+   REDUCED MOTION
 ========================= */
-
-/* moving stars */
-
-body::before {
-  animation: starsMove 45s linear infinite;
-}
-
-@keyframes starsMove {
-  from {
-    background-position:
-      0 0,
-      35px 25px;
-  }
-
-  to {
-    background-position:
-      0 700px,
-      35px 1000px;
-  }
-}
-
-
-/* HERO GLOW */
-
-.hero-title {
-  text-shadow:
-    0 0 30px rgba(145, 167, 255, .08);
-}
-
-.hero-title span {
-  text-shadow:
-    0 0 35px rgba(145, 167, 255, .28);
-}
-
-
-/* subtle badge pulse */
-
-.hero-badge {
-  animation: badgePulse 3s ease-in-out infinite;
-}
-
-@keyframes badgePulse {
-  0%,
-  100% {
-    opacity: .6;
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
-
-
-/* scroll indicator */
-
-.scroll-hint {
-  animation: scrollFloat 2s ease-in-out infinite;
-}
-
-@keyframes scrollFloat {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(8px);
-  }
-}
-
-
-/* EXPLORE BUTTON */
-
-#explore-btn:active {
-  transform: scale(.97);
-}
-
-#explore-btn:disabled {
-  cursor: wait;
-  opacity: .65;
-  transform: none;
-  box-shadow: none;
-}
-
-
-/* cards */
-
-.event-card {
-  transition:
-    transform .25s ease,
-    border-color .25s ease,
-    box-shadow .25s ease;
-}
-
-.event-card:hover {
-  transform: translateY(-6px);
-  border-color: #7189e6;
-  box-shadow:
-    0 18px 50px rgba(0, 0, 0, .25),
-    0 0 35px rgba(113, 137, 230, .07);
-}
-
-
-/* icons */
-
-.event-icon {
-  display: inline-block;
-  animation: iconFloat 4s ease-in-out infinite;
-}
-
-@keyframes iconFloat {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-
-  50% {
-    transform: translateY(-5px) rotate(3deg);
-  }
-}
-
-
-/* APOD */
-
-.apod-card {
-  transition:
-    transform .3s ease,
-    border-color .3s ease;
-}
-
-.apod-card:hover {
-  transform: translateY(-4px);
-  border-color: #415285;
-}
-
-
-/* DATE INPUT */
-
-#birthday {
-  transition:
-    border-color .2s ease,
-    box-shadow .2s ease;
-}
-
-#birthday:focus {
-  outline: none;
-  border-color: #829cff;
-  box-shadow: 0 0 0 3px rgba(130, 156, 255, .12);
-}
-
-
-/* birthday ending */
-
-.universe-ending {
-  opacity: 0;
-  animation: endingAppear 1.2s ease forwards;
-  animation-delay: .4s;
-}
-
-@keyframes endingAppear {
-  to {
-    opacity: 1;
-  }
-}
-
-
-/* reduced motion accessibility */
 
 @media (prefers-reduced-motion: reduce) {
   *,

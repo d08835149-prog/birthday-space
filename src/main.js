@@ -396,7 +396,7 @@ function createEventCard(item, index) {
 
   return `
     <article
-      class="event-card"
+      class="eve0nt-card"
       style="animation-delay: ${index * 120}ms"
     >
       <div class="event-icon">${item.icon}</div>
